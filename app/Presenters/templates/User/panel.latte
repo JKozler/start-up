@@ -1,10 +1,55 @@
 {block content}
+<!--Hlavička projektu - pro jméno a sort-->
+<br />
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+        <div class="card bg-light text-dark container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card-body"><b>User name</b></div>
+                </div>
+                <div class="col-sm-6 card-body">
+                    <button type="button" class="btn btn-info">
+                        ⓘ Můj účet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <label for="search">Vyhledejte projekt:</label>
+        <input id="search" class="form-control text-center" id="myInput" type="text" placeholder="Hledat..">
+    </div>
+    <div class="col-sm-3">
+        <label for="sel1">Vyberte si obor projektu:</label>
+      <select class="form-control" id="sel1">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+      </select>
+    </div>
+  </div>
+</div>
+<!--Konec hlavičky-->
 
-
-<!-- https://codepen.io/migli/pen/dyPbggZ -->
 <section class="py-5">
     <div class="container">
-        gang
+    <!--Tedy je začátek logů jednotlivých projektů-->
+        <div class="card text-center">
+        <div class="card-header">
+            Featured
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-primary">Zajímá mě!</a>
+        </div>
+        <div class="card-footer text-muted">
+            2 days ago
+        </div>
+        </div>
     </div>
 
 </section>

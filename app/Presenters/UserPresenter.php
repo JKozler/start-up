@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use App\Model\UserManager;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Utils\Json;
@@ -18,6 +17,7 @@ use Nette\Utils\FileSystem;
 use Nette\Security\Passwords;
 use Nette\Mail\Message;
 use Nette\Security\IAuthenticator;
+use App\Model\UserManager;
 
 final class UserPresenter extends Nette\Application\UI\Presenter
 {
@@ -228,7 +228,7 @@ final class UserPresenter extends Nette\Application\UI\Presenter
     public function signInFormSucceeded(Form $form, \stdClass $values): void{
         try{
 
-            if(!$row = $this->database->fetch('SELECT * FROM user WHERE username = ?', $values->email)){
+            if(!$row = $this->database->fetch('SELECT * FROM user_ntor WHERE username = ?', $values->email)){
                 $this->flashMessage('Účet neexistuje','danger');
             } else if($row->ver > 0){
                 $this->getUser()->login($values->email, $values->password);
@@ -379,7 +379,7 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
     public function renderR($u): void{
 
-        if(!$row = $this->database->fetch('SELECT * FROM user WHERE token = ?',$u)){
+        if(!$row = $this->database->fetch('SELECT * FROM user_ntor WHERE token = ?',$u)){
             $this->flashMessage('ERR 0e002','danger');
             $this->redirect('User:');
         }else {

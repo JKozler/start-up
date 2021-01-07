@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\app",
+    "\\app\\config",
+    "\\app\\Presenters",
+    "\\app\\Presenters\\templates",
+    "\\app\\Presenters\\templates\\Homepage",
+    "\\www",
+    "\\www\\css",
+    "\\www\\img"
+  ],
+  "SelectedNode": "\\www\\css\\style.css",
+  "PreviewInSolutionExplorer": false
+}
