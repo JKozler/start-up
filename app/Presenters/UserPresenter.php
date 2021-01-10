@@ -396,6 +396,9 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
     }
 
+    public function renderInventorPage(): void{
+    }
+
     protected function createComponentResetForm(): Form
     {
         $form = new Form;
