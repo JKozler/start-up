@@ -39,20 +39,26 @@
 
 <!--Tedy je začátek logů jednotlivých projektů-->
 <section class="py-3">
-    <div class="container">
+
+
+    {foreach $vysledky as $r}
+
+    <div class="container" id="{$r->id}">
         <div class="card text-center">
         <div class="card-header">
-            Název
+            {$r->name}
         </div>
         <div class="card-body">
-            <h5 class="card-title">O co jde?</h5>
-            <p class="card-text">O co žádám?</p>
+            <h5 class="card-title">{$r->easy}</h5>
+            <p class="card-text">{$r->castka},- Kč</p>
             <a href="#" class="btn btn-primary">Zajímá mě!</a>
         </div>
         <div class="card-footer text-muted">
-            2 days ago
+            {$r->kdy}
         </div>
         </div>
     </div>
+
+    {/foreach}
 
 </section>

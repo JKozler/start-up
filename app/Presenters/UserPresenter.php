@@ -38,6 +38,56 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         $this->userManager = $userManager;
     }
 
+    /* INVENTOR PAGES */
+    public function renderAdd(): void{
+
+        if (!$this->getUser()->isLoggedIn())
+            $this->redirect('User:');
+
+
+        if(!$this->template->user = $this->getUser()->roles["who"] == 'ntor')
+            $this->redirect('User:panel');
+
+    }
+
+    public function renderInventor(): void{
+
+        if (!$this->getUser()->isLoggedIn())
+            $this->redirect('User:');
+
+        if(!$this->template->user = $this->getUser()->roles["who"] == 'ntor')
+            $this->redirect('User:panel');
+
+        $this->template->vysledky = $this->database->table('ideas')->where('id_ntor ?', $this->getUser()->id);
+
+    }
+
+
+    /* INVESTOR PAGES */
+    public function renderInvolved(): void{
+
+        if (!$this->getUser()->isLoggedIn())
+            $this->redirect('User:');
+
+
+        if($this->template->user = $this->getUser()->roles["who"] == 'ntor')
+            $this->redirect('User:inventor');
+    }
+
+    public function renderPanel(): void{
+
+        if (!$this->getUser()->isLoggedIn())
+            $this->redirect('User:');
+
+
+        if($this->template->user = $this->getUser()->roles["who"] == 'ntor')
+            $this->redirect('User:inventor');
+
+        $this->template->vysledky = $this->database->table('ideas');
+    }
+
+
+
 
     // NTOR
     protected function createComponentRegistrationForm(): UI\Form
@@ -187,15 +237,15 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
 
 
-
-
-
-
     public function renderDefault(): void{
         $this->template->logged = $this->getUser()->isLoggedIn();
         if ($this->getUser()->isLoggedIn())
         {
-            $this->redirect('User:panel');
+
+            if($this->template->user = $this->getUser()->roles["who"] == 'ntor')
+                $this->redirect('User:inventor');
+            else
+                $this->redirect('User:panel');
         }
 
         if(array_key_exists( "user_name",$this->getUser()->roles)){
@@ -204,6 +254,72 @@ final class UserPresenter extends Nette\Application\UI\Presenter
             $this->template->user = "Nepřihlášen";
         }
     }
+
+    protected function createComponentIdeaForm(): Form
+    {
+        $form = new Form;
+
+        $form->addText('name', 'Název:')
+            ->setHtmlAttribute('class', 'form-control')
+            ->setRequired();
+
+        $form->addInteger('castka', 'Částka:')
+            ->setDefaultValue(0)
+            ->setRequired()
+            ->setHtmlAttribute('class', 'form-control input-sm')
+            ->addRule($form::RANGE, 'Částka musí být v rozsahu mezi %d a %d.', [0, 100000000]);
+
+
+        //YEES
+        $obory = $this->database->table('obory')->fetchPairs('id', 'name');
+
+
+        $form->addSelect('obor', 'Obor:', $obory)
+            ->setDefaultValue(1)
+            ->setHtmlAttribute('class', 'form-control')
+            ->setRequired();
+
+
+
+        $form->addTextArea('easy', 'O co jde:')
+            ->setRequired()
+            ->setHtmlAttribute('class', 'form-control input-sm')
+            ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 255);
+
+        $form->addTextArea('full', 'Všechny podrobnosti: (rozsáhle) (uvidí po zaplacení poplatku):')
+            ->setRequired()
+            ->setHtmlAttribute('class', 'form-control')
+            ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 10000);
+
+
+        $form->addSubmit('send', 'Přidat a zaplatit! ⓘ')
+            ->setHtmlAttribute('class', 'btn btn-primary mt-3 mx-auto fbud');
+
+        $form->addSubmit('send2', 'Přidat! ⓘ')
+            ->setHtmlAttribute('class', 'btn btn-light mt-3 mx-auto fbud');
+
+        $form->addProtection();
+        $form->onSuccess[] = [$this, 'ideaFormSucceeded'];
+        return $form;
+    }
+
+    public function ideaFormSucceeded(UI\Form $form, \stdClass $values): void
+    {
+        $this->template->logged = $this->getUser()->isLoggedIn();
+        if ($this->getUser()->isLoggedIn()) {
+
+            if ($this->template->user = $this->getUser()->roles["who"] == 'ntor') {
+                $this->userManager->createIdea($this->getUser()->id, $values->name, $values->castka, $values->easy, $values->full, $values->obor);
+                $this->flashMessage('Úspěšně vytvořeno');
+                $this->redirect('User:inventor');
+            }
+
+        }
+
+
+
+    }
+
 
     protected function createComponentSignInForm(): Form
     {
@@ -228,8 +344,12 @@ final class UserPresenter extends Nette\Application\UI\Presenter
     public function signInFormSucceeded(Form $form, \stdClass $values): void{
         try{
 
-            if(!$row = $this->database->fetch('SELECT * FROM user_ntor WHERE username = ?', $values->email)){
-                $this->flashMessage('Účet neexistuje','danger');
+            $err = false;
+
+           // if(!$row = $this->database->fetch('SELECT * FROM user_ntor, user_stor WHERE user_ntor.username = ? OR user_stor.username = ?', $values->email, $values->email)){
+            if(!$row = $this->database->fetch('SELECT * FROM user_ntor WHERE username = ? ', $values->email)){
+                $err = true;
+                //$this->flashMessage('Účet neexistuje','danger');
             } else if($row->ver > 0){
                 $this->getUser()->login($values->email, $values->password);
                 $this->flashMessage('Úspěšně přihlášeno');
@@ -240,9 +360,22 @@ final class UserPresenter extends Nette\Application\UI\Presenter
             }
 
 
+            if(!$err) return; // pro jistotu
+            if(!$row = $this->database->fetch('SELECT * FROM user_stor WHERE username = ? ', $values->email)){
+                $this->flashMessage('Účet neexistuje','danger');
+            } else if($row->ver > 0){
+                $this->getUser()->login($values->email, $values->password);
+                $this->flashMessage('Úspěšně přihlášeno');
+                $this->redirect('User:panel');
+            }else {
+                $this->flashMessage('Váš účet není zatím aktivován! Zkontrolujte prosím i SPAM složku ve vašem Mailu','warning');
+                //$this->redirect('User:');
+            }
+
+
         } catch(\Exception $e) {
-            $this->flashMessage('Špatné údaje','danger');
-            $this->redirect('User:panel');
+            $this->flashMessage('Špatné údaje ' . $e,'danger');
+            //$this->redirect('User:panel');
         }
 
 
@@ -394,9 +527,6 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
         }
 
-    }
-
-    public function renderInventorPage(): void{
     }
 
     protected function createComponentResetForm(): Form

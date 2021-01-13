@@ -13,6 +13,8 @@ class UserManager implements IAuthenticator
     private $database;
     private $table_ntor;
     private $table_stor;
+    private $table_ideas;
+    private $table_obory;
     private $passwords;
 
     public function __construct(Nette\Database\Context $database, Nette\Security\Passwords $passwords)
@@ -20,6 +22,8 @@ class UserManager implements IAuthenticator
         $this->database = $database;
         $this->table_ntor = $database->table('user_ntor');
         $this->table_stor = $database->table('user_stor');
+        $this->table_ideas = $database->table('ideas');
+        $this->table_obory = $database->table('obory');
         $this->passwords = $passwords;
     }
 
@@ -27,21 +31,26 @@ class UserManager implements IAuthenticator
 
         $userrow = $this->getByNtor($credentials[0]);
         $userrow2 = $this->getByStor($credentials[0]);
-        if(empty($userrow) && empty($userrow2)) {
-            throw new \Exception;
-        }
 
-        $password = $userrow['password'];
-        if(!$this->passwords->verify($credentials[1],$password)){
+        if(!empty($userrow)) {
 
-            if(!$this->passwords->verify($credentials[1],$userrow2['password'])){
+            $password = $userrow['password'];
+
+            if(!$this->passwords->verify($credentials[1],$password)){
                 throw new \Exception;
             } else
-                return new Nette\Security\Identity($userrow2['id'],['user_name'=>$userrow2['username']]); //id,role, informace, STOR
+            return new Nette\Security\Identity($userrow['id'],['user_name'=>$userrow['username'],'who'=>"ntor"]); //id,role, informace, NTOR
+        } else if(!empty($userrow2)) {
 
+            $password2 = $userrow2['password'];
+
+            if(!$this->passwords->verify($credentials[1],$password2)){
+                throw new \Exception;
+            } else
+                return new Nette\Security\Identity($userrow2['id'],['user_name'=>$userrow2['username'],'who'=>"stor"]); //id,role, informace, STOR
+        } else {
+            throw new \Exception;
         }
-
-        return new Nette\Security\Identity($userrow['id'],['user_name'=>$userrow['username']]); //id,role, informace, NTOR
     }
 
     public function getByNtor(string $username){
@@ -92,4 +101,42 @@ class UserManager implements IAuthenticator
         ], 'WHERE token = ?',$u);
 
     }
+
+
+
+
+    public function createIdea($id_ntor, $name, $castka, $easy, $full, $id_obory){
+
+        $this->table_ideas->insert([
+            'id_ntor'=>$id_ntor,
+            'name'=>$name,
+            'castka'=>$castka,
+            'easy'=>$easy,
+            'full'=>$full,
+            'id_obory'=>$id_obory
+        ]);
+    }
+
+
+/*
+    public function allMoney(){
+        $money = $this->table2->sum('money');
+        return $money;
+    }
+
+    public function firmaMoney($ico){
+        $money = $this->table2->where('ico = ?',$ico)->sum('money');
+        return $money;
+    }
+
+    public function topPrispevek($ico){
+        $money = $this->table2->where('ico = ?',$ico)->max('money');
+        return $money;
+    }
+
+    public function userInfo($id,$ico){
+        $row = $this->table->where('id = ? AND ico = ?',$id,$ico);
+        return $row;
+    }
+*/
 }

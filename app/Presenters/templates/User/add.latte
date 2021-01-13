@@ -1,27 +1,25 @@
 {block content}
 <br />
 <div class="container card-body">
+
+
     <h3>Vytváření projektu</h3>
     <hr />
+    {form ideaForm}
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="name"><b>Název/Jméno</b></label>
-                <input class="form-control input-sm" id="name" type="text">
+                {input name}
             </div>
         </div>
         <div class="col-sm-6">
             <label for="sel1"><b>Vyberte si obor projektu:</b></label>
-            <select class="form-control" id="sel1">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-            </select>
+            {input obor}
         </div>
     </div>
     <hr />
-    <div class="row">
+   <!-- <div class="row">
         <div class="col-sm-12">
             <div class="form-group">
                 <label for="whatSmall"><b>O co žádám?</b> (souhrně)</label>
@@ -45,12 +43,20 @@
                 <textarea class="form-control" id="whatBig" rows="3"></textarea>
             </div>
         </div>
+    </div>  -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="whyBig"><b>Kolik?</b> //(0 pokud rada)</label>
+                {input castka}
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="form-group">
-                <label for="whyBig"><b>O co jde? (rozsáhle)</b> - uvidí po zaplacení poplatku</label>
-                <textarea class="form-control" id="whyBig" rows="3"></textarea>
+                <label for="whyBig"><b>O co jde?</b></label>
+                {input easy}
             </div>
         </div>
     </div>
@@ -58,27 +64,30 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="form-group">
-                <label for="info"><b>Podrobnosti:</b> (uvidí po zaplacení poplatku)</label>
-                <textarea class="form-control" id="info" rows="3"></textarea>
+                <label for="info"><b>Všechny podrobnosti: (rozsáhle)</b> (uvidí po zaplacení poplatku)</label>
+                {input full}
             </div>
         </div>
     </div>
-    <div class="row">
+   <!-- <div class="row">
         <div class="col-sm-12">
             <div class="form-group">
                 <label for="info"><b>Dosavadní úroveň:</b> (uvidí po zaplacení poplatku)</label>
                 <textarea class="form-control" id="info" rows="3"></textarea>
             </div>
         </div>
-    </div>
+    </div> -->
     <br />
     <div class="row">
         <div class="col-sm-12">
             <div class="d-flex flex-row-reverse">
-                <button type="button" class="btn btn-light" data-placement="top" title="Pokud o Vás bude mít investor zájem, musí zaplatit poplatek, tudíž činnost, kdy se může rozhodnout, zda se mu tato možnost vyplatí.">Přidat! ⓘ</button>
-                <p class="text-white">|</p>
-                <button type="button" class="btn btn-primary" title="Pokud o Vás bude mít investor zájem, může s Vámi rovnou začít komunikovat a nemusí nic řešit.">Přidat a zaplatit! ⓘ</button>
-            </div>
+                {input send}
+                <!--<button type="button" class="btn btn-light" data-placement="top" title="Pokud o Vás bude mít investor zájem, musí zaplatit poplatek, tudíž činnost, kdy se může rozhodnout, zda se mu tato možnost vyplatí.">Přidat! ⓘ</button>
+                --><p class="text-white">|</p>
+                {input send2}
+                <!--<button type="button" class="btn btn-primary" title="Pokud o Vás bude mít investor zájem, může s Vámi rovnou začít komunikovat a nemusí nic řešit.">Přidat a zaplatit! ⓘ</button>
+            --></div>
         </div>
     </div>
+    {/form}
 </div>

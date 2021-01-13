@@ -32,15 +32,17 @@
 
 
 <section class="py-3">
-    <div class="container">
     <!--Tedy je začátek logů jednotlivých projektů-->
+
+    {foreach $vysledky as $r}
+    <div class="container" id="{$r->id}">
         <div class="card text-center">
         <div class="card-header">
-            Název projektu
+            {$r->name}
         </div>
         <div class="card-body">
-            <h5 class="card-title">O co jde?</h5>
-            <p class="card-text">O co žádám?</p>
+            <h5 class="card-title">{$r->easy}</h5>
+            <p class="card-text">{$r->castka},- Kč</p>
             <p><a herf="#" class="btn text-primary">Nové zprávy - když ano</a></p>
             <a href="#" class="btn btn-primary">Upravit</a>
         </div>
@@ -49,4 +51,6 @@
         </div>
         </div>
     </div>
+
+    {/foreach}
 </section>
