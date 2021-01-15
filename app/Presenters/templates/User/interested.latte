@@ -1,0 +1,68 @@
+{block content}
+<style>
+.vl {
+  border-left: 0.2em solid black;
+  height: 100%;
+}
+</style>
+<br />
+<div class="container card-body">
+<h2>Komunikační kanál</h2>
+<br /><br />
+    <div class="row">
+        <div class="col-sm-7">
+            <label><b>Název projektu:</b></label>
+            <p>-</p>
+            <label><b>Co potřebuju?</b></label>
+            <p>-</p>
+            <label><b>Popis:</b></label>
+            <p>-</p>
+            <label><b>Podrobnosti:</b></label>
+            <p>-</p>
+            <hr />
+            <h3>Další postup</h3>
+            <div class="row">
+            <!--Zde bude foreach na vypisování věcí k dohodnutí-->
+                <!--Po klinutí se spustí modalka-->
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#modalInformation">Název toho k dohodnutí</button>
+                <br />
+            </div>
+            <!--Konec toho fereache-->
+        </div>
+        <div class="col-sm-1">
+            <div class="vl"></div>
+        </div>
+        <div class="col-sm-4">
+            <div class="row">
+                <a n:href="User:mess" class="btn btn-primary">Přejít na zprávy!</a>
+            </div>
+            <hr />
+            <!--Když jedna strana dá, že to je vyřešeno, musí vždy druhá strana schválit-->
+            <h3>Na shválení</h3>
+            <!--Podobné jako před tím, také se otevře modalka-->
+            <button type="button" class="btn btn-light" data-toggle="modal" data-target="#modalInformation">Označeno jako splněno/nesplněno</button>
+        </div>
+    </div>
+
+    <!--Začátek modalky, když uživatel rozklikne dohodnutí-->
+    <div class="modal fade" id="modalInformation" tabindex="-1" role="dialog" aria-labelledby="modalInformation" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Název dohodnutí</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Popis dohodnutí
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Nesplněné</button>
+        <button type="button" class="btn btn-success">Splněné</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Konec modalky, když uživatel rozklikne dohodnutí-->
+</div>

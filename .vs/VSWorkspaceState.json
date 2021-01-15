@@ -6,10 +6,11 @@
     "\\app\\Presenters",
     "\\app\\Presenters\\templates",
     "\\app\\Presenters\\templates\\Homepage",
+    "\\app\\Presenters\\templates\\User",
     "\\www",
     "\\www\\css",
     "\\www\\img"
   ],
-  "SelectedNode": "\\www\\css\\style.css",
+  "SelectedNode": "\\app\\Presenters\\UserPresenter.php",
   "PreviewInSolutionExplorer": false
 }

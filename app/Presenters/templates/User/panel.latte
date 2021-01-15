@@ -25,9 +25,7 @@
     </div>
         <div class="col-sm-3">
             <div class="d-flex flex-row-reverse">
-                <button type="button" class="btn btn-info">
-                    ⓘ Můj účet
-                </button>
+                <a n:href="User:account" class="btn btn-info">ⓘ Můj účet</a>
                 <p class="text-white">|</p>
                 <a n:href="User:involved" class="btn btn-primary">Zapojené</a>
             </div>
@@ -35,14 +33,13 @@
   </div>
 </div>
 <!--Konec hlavičky-->
-<br>
 
 <!--Tedy je začátek logů jednotlivých projektů-->
 <section class="py-3">
 
 
     {foreach $vysledky as $r}
-
+<br>
     <div class="container" id="{$r->id}">
         <div class="card text-center">
         <div class="card-header">
@@ -51,7 +48,12 @@
         <div class="card-body">
             <h5 class="card-title">{$r->easy}</h5>
             <p class="card-text">{$r->castka},- Kč</p>
-            <a href="#" class="btn btn-primary">Zajímá mě!</a>
+            <a n:href="User:interested" class="btn btn-primary">Zajímá mě!</a>
+            <!--Když klikne na "Zajímá mě!" a uživatel nemá zaplacený poplatek, může jej zaplatit sám nebo vyzvat inventora - pro obě varianty se zobarzí modalka-->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalInformation">
+                Zajímá mě!
+            </button>
+            <!--Pokud má uživatel zaplaceno, tak ho to přesune na interested.latte-->
         </div>
         <div class="card-footer text-muted">
             {$r->kdy}
@@ -60,5 +62,27 @@
     </div>
 
     {/foreach}
+
+    <!--Začátek modalky, když uživatel nemá zaplacený poplatek-->
+    <div class="modal fade" id="modalInformation" tabindex="-1" role="dialog" aria-labelledby="modalInformation" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Informace</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Omlouváme se, ale uživatel nemá zaplacený poplatek pro vytvoření komunikace. Pokud si přejete komunikaci zavézt co nejrychleji, tak můžete poplatek zaplatit vy (990 Kč) nebo ho můžete upozornit.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Upozornit</button>
+        <button type="button" class="btn btn-primary">Zaplatit</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Konec modalky, když uživatel nemá zaplacený poplatek-->
 
 </section>
