@@ -16,13 +16,11 @@
     </div>
     <div class="col-sm-6">
     <div class="d-flex flex-row-reverse">
-        <button type="button" class="btn btn-info">
-            ⓘ Můj účet
-        </button>
+        <a n:href="User:account" class="btn btn-info">ⓘ Můj účet</a>
         <p class="text-white">|</p>
         <a n:href="User:add" class="text-white btn btn-success marLeft">Přidat +</a>
         <p class="text-white">|</p>
-        <button type="button" class="btn btn-primary">Zprávy/reakce</button>
+        <a n:href="User:reaction" class="btn btn-primary">Zprávy/reakce</a>
     </div>
     </div>
   </div>
@@ -43,8 +41,8 @@
         <div class="card-body">
             <h5 class="card-title">{$r->easy}</h5>
             <p class="card-text">{$r->castka},- Kč</p>
-            <p><a herf="#" class="btn text-primary">Nové zprávy - když ano</a></p>
-            <a href="#" class="btn btn-primary">Upravit</a>
+            <p><a n:href="User:interested" class="btn text-primary">Nové zprávy - když ano</a></p>
+            <a n:href="User:add" class="btn btn-primary">Upravit</a>
         </div>
         <div class="card-footer text-muted">
             ZAPLACENO[ANO/NE]

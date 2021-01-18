@@ -1,0 +1,43 @@
+{block content}
+<br />
+<div class="container card-body">
+  <div class="row">
+    <div class="col-sm-9">
+        <div class="row">
+            <div class="col-sm-4">
+                <h3>Zprávy a reakce</h3>
+            </div>
+            <div class="col-sm-3">
+            <label for="search">Vyhledejte projekt:</label>
+            <input id="search" class="form-control text-center" id="myInput" type="text" placeholder="Hledat..">
+            </div>
+        </div>
+    </div>
+        <div class="col-sm-3">
+            <div class="d-flex flex-row-reverse">
+                <button type="button" class="btn btn-info">
+                    ⓘ Můj účet
+                </button>
+                <p class="text-white">|</p>
+                <a n:href="User:inventor" class="btn btn-primary">Hlavní stránka</a>
+            </div>
+        </div>
+  </div>
+</div>
+
+<br>
+
+<!--Tedy je začátek logů projektů, když o něj má nškdo zájem-->
+<section class="py-3">
+    <div class="container">
+        <div class="card text-center">
+        <div class="card-header">
+            Název
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">O co jde?</h5>
+            <a n:href="User:interested" class="btn btn-primary">Novinky/zprávy</a>
+        </div>
+        </div>
+    </div>
+</section>
