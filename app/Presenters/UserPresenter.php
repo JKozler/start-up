@@ -86,6 +86,33 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         $this->template->vysledky = $this->database->table('ideas');
     }
 
+    public function renderInterested($i): void{
+
+
+
+        if (!$this->getUser()->isLoggedIn())
+            $this->redirect('User:');
+
+
+        //if($this->template->user = $this->getUser()->roles["who"] == 'ntor')
+         //   $this->redirect('User:inventor');
+
+
+        $row = $this->database->fetch('SELECT * FROM ideas WHERE id = ?', $i);
+        //$row = $this->database->table('ideas')->where('is ?', $i);
+
+        if($row == false || $i == 0){
+
+            $this->flashMessage('Nápad nenalezen','danger');
+            $this->redirect('User:');
+
+        }else {
+            $this->template->idea = $row;
+        }
+
+        //$this->template->vysledky = $this->database->table('ideas');
+    }
+
 
 
 
@@ -279,7 +306,10 @@ final class UserPresenter extends Nette\Application\UI\Presenter
             ->setHtmlAttribute('class', 'form-control')
             ->setRequired();
 
-
+        $form->addTextArea('reward', 'Co za to:')
+            ->setRequired()
+            ->setHtmlAttribute('class', 'form-control input-sm')
+            ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 255);
 
         $form->addTextArea('easy', 'O co jde:')
             ->setRequired()
@@ -309,7 +339,7 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         if ($this->getUser()->isLoggedIn()) {
 
             if ($this->template->user = $this->getUser()->roles["who"] == 'ntor') {
-                $this->userManager->createIdea($this->getUser()->id, $values->name, $values->castka, $values->easy, $values->full, $values->obor);
+                $this->userManager->createIdea($this->getUser()->id, $values->name, $values->castka, $values->reward, $values->easy, $values->full, $values->obor);
                 $this->flashMessage('Úspěšně vytvořeno');
                 $this->redirect('User:inventor');
             }
