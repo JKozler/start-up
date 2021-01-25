@@ -48,11 +48,16 @@
         <div class="card-body">
             <h5 class="card-title">{$r->easy}</h5>
             <p class="card-text">{$r->castka},- Kč</p>
+            <p class="card-text"><b>Nabízíme - {$r->reward}</b></p>
+            {if $r->zaplaceno == 1}
             <a n:href="User:interested" class="btn btn-primary">Zajímá mě!</a>
             <!--Když klikne na "Zajímá mě!" a uživatel nemá zaplacený poplatek, může jej zaplatit sám nebo vyzvat inventora - pro obě varianty se zobarzí modalka-->
+            {/if}
+            {if $r->zaplaceno == 0}
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalInformation">
                 Zajímá mě!
             </button>
+            {/if}
             <!--Pokud má uživatel zaplaceno, tak ho to přesune na interested.latte-->
         </div>
         <div class="card-footer text-muted">
