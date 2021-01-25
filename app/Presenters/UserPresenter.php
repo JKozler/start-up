@@ -50,6 +50,30 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
     }
 
+    public function renderEdit($i): void{
+
+        if (!$this->getUser()->isLoggedIn())
+            $this->redirect('User:');
+
+
+        if(!$this->template->user = $this->getUser()->roles["who"] == 'ntor')
+            $this->redirect('User:panel');
+
+        //$row = $this->database->fetch('SELECT * FROM ideas WHERE id = ?', $i);
+        $idea = $this->userManager->getIdea($i);
+
+        if($idea == false || $i == 0){
+
+            $this->flashMessage('Nápad nenalezen','danger');
+            $this->redirect('User:');
+
+        }else {
+            //$this->template->idea = $row;
+            $this['ideaForm']->setDefaults($idea->toArray());
+        }
+
+    }
+
     public function renderInventor(): void{
 
         if (!$this->getUser()->isLoggedIn())
