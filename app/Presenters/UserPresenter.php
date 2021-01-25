@@ -255,6 +255,106 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         }
     }
 
+    protected function createComponentPasswordForm(): Form
+    {
+        $form = new Form;
+
+        $form->addPassword('passwordOld', 'Staré heslo:')
+            ->setHtmlAttribute('class', 'form-control text-center')
+            ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 255)
+            ->setRequired();
+        
+        $form->addPassword('password', 'Nové heslo:')
+            ->setHtmlAttribute('class', 'form-control text-center')
+            ->setHtmlAttribute('placeholder', 'Zadejte nové heslo')
+            ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 255)
+            ->setRequired();
+        
+        $form->addPassword('passwordNewAgain', 'Nové heslo znovu:')
+            ->setHtmlAttribute('class', 'form-control text-center')
+            ->setHtmlAttribute('placeholder', 'Zadejte nové heslo znovu')
+            ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 255)
+            ->setRequired();
+        
+        $form->addSubmit('send', 'Aktualizovat')
+            ->setHtmlAttribute('class', 'btn btn-primary');
+
+        $form->addProtection();
+        $form->onSuccess[] = [$this, 'passwordFormSucceeded'];
+        return $form;
+    }
+
+    public function passwordFormSucceeded(UI\Form $form, \stdClass $values): void
+    {
+        if ($this->getUser()->isLoggedIn()) {
+            if ($this->getUser()->roles["who"] == 'ntor')
+            {
+                $post = $this->database->query('UPDATE user_ntor SET password = ? WHERE id=?', $values->password, $this->getUser()->id);
+            }
+            else
+            {
+                $post = $this->database->table('user_stor')->get($this->getUser()->id);
+                $post->update($values);
+            }
+            $this->flashMessage("User byl úspěšně updatován.", 'success');
+            $this->redirect('User:account');
+        }
+    }
+
+    protected function createComponentItemsForm(): Form
+    {
+        $form = new Form;
+
+        $form->addText('name', 'Název/Jméno:')
+            ->setHtmlAttribute('class', 'form-control')
+            ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 255)
+            ->setRequired();
+        
+        $form->addText('smallP', 'Krátký popis:')
+            ->setHtmlAttribute('class', 'form-control')
+            ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 255)
+            ->setRequired();
+        
+        $form->addTextArea('fullP', 'Delší popis:')
+            ->setRequired()
+            ->setHtmlAttribute('class', 'form-control')
+            ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 10000);
+        
+        $form->addSubmit('send', 'Přidat')
+            ->setHtmlAttribute('class', 'btn btn-success');
+
+        $form->addProtection();
+        $form->onSuccess[] = [$this, 'itemFormSucceeded'];
+        return $form;
+    }
+
+    public function renderAccount(): void
+    {
+        $this->template->logged = $this->getUser()->isLoggedIn();
+        if ($this->getUser()->isLoggedIn())
+        {
+            if ($this->getUser()->roles["who"] == 'ntor')
+            {
+                $this->template->user = $this->database->table('user_ntor')->where('id=?', $this->getUser()->id)->fetch();
+                $this->template->data = $this->database->table('ideas')->where('id_ntor=?', $this->getUser()->id)->count('*');
+            }
+            else
+            {
+                $this->template->user = $this->database->table('user_stor')->where('id=?', $this->getUser()->id)->fetch();
+            }
+        }
+    }
+
+    public function itemFormSucceeded(UI\Form $form, \stdClass $item): void
+    {
+        if ($this->getUser()->isLoggedIn()) {
+            $post = $this->database->table('items')->insert($item);
+
+            $this->flashMessage("Item byl úspěšně přidán.", 'success');
+            $this->redirect('User:interested');
+        }
+    }
+
     protected function createComponentIdeaForm(): Form
     {
         $form = new Form;
