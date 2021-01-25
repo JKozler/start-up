@@ -430,7 +430,7 @@ final class UserPresenter extends Nette\Application\UI\Presenter
             ->setHtmlAttribute('class', 'form-control')
             ->setRequired();
 
-        $form->addTextArea('reward', 'Co za to:')
+        $form->addTextArea('reward', 'Co nabízíme:')
             ->setRequired()
             ->setHtmlAttribute('class', 'form-control input-sm')
             ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 255);

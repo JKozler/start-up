@@ -111,7 +111,7 @@ class UserManager implements IAuthenticator
             'id_ntor'=>$id_ntor,
             'name'=>$name,
             'castka'=>$castka,
-            'reward'=>reward,
+            'reward'=>$reward,
             'easy'=>$easy,
             'full'=>$full,
             'id_obory'=>$id_obory
