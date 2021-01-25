@@ -41,8 +41,8 @@
         <div class="card-body">
             <h5 class="card-title">{$r->easy}</h5>
             <p class="card-text">{$r->castka},- Kč</p>
-            <p><a n:href="User:interested" class="btn text-primary">Nové zprávy - když ano</a></p>
-            <a n:href="User:add" class="btn btn-primary">Upravit</a>
+            <p><a n:href="User:interested,$r->id" class="btn text-primary">Nové zprávy - když ano</a></p>
+            <a n:href="User:edit, $r->id" class="btn btn-primary">Upravit</a>
         </div>
         <div class="card-footer text-muted">
             ZAPLACENO[ANO/NE]

@@ -105,19 +105,23 @@ class UserManager implements IAuthenticator
 
 
 
-    public function createIdea($id_ntor, $name, $castka, $easy, $full, $id_obory){
+    public function createIdea($id_ntor, $name, $castka, $reward,$easy, $full, $id_obory){
 
         $this->table_ideas->insert([
             'id_ntor'=>$id_ntor,
             'name'=>$name,
             'castka'=>$castka,
+            'reward'=>reward,
             'easy'=>$easy,
             'full'=>$full,
             'id_obory'=>$id_obory
         ]);
     }
 
-
+    public function getIdea($id)
+    {
+        return $this->table_ideas->get($id);
+    }
 /*
     public function allMoney(){
         $money = $this->table2->sum('money');
