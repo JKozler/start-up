@@ -122,6 +122,7 @@ class UserManager implements IAuthenticator
     {
         return $this->table_ideas->get($id);
     }
+
 /*
     public function allMoney(){
         $money = $this->table2->sum('money');

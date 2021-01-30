@@ -425,7 +425,7 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         $obory = $this->database->table('obory')->fetchPairs('id', 'name');
 
 
-        $form->addSelect('obor', 'Obor:', $obory)
+        $form->addSelect('id_obory', 'Obor:', $obory)
             ->setDefaultValue(1)
             ->setHtmlAttribute('class', 'form-control')
             ->setRequired();
@@ -463,9 +463,23 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         if ($this->getUser()->isLoggedIn()) {
 
             if ($this->template->user = $this->getUser()->roles["who"] == 'ntor') {
-                $this->userManager->createIdea($this->getUser()->id, $values->name, $values->castka, $values->reward, $values->easy, $values->full, $values->obor);
-                $this->flashMessage('Úspěšně vytvořeno');
-                $this->redirect('User:inventor');
+
+                $index = $this->getParameter('i');
+
+                if($index){
+
+                    $ideaI = $this->userManager->getIdea($index);
+                    $ideaI->update((array)$values);
+                    $this->flashMessage('Úspěšně aktualizováno');
+                    $this->redirect('User:inventor');
+
+                }else {
+                    $this->userManager->createIdea($this->getUser()->id, $values->name, $values->castka, $values->reward, $values->easy, $values->full, $values->id_obory);
+                    $this->flashMessage('Úspěšně vytvořeno');
+                    $this->redirect('User:inventor');
+                }
+
+
             }
 
         }
@@ -520,7 +534,7 @@ final class UserPresenter extends Nette\Application\UI\Presenter
             } else if($row->ver > 0){
                 $this->getUser()->login($values->email, $values->password);
                 $this->flashMessage('Úspěšně přihlášeno');
-                $this->redirect('User:panel');
+                //$this->redirect('User:panel');
             }else {
                 $this->flashMessage('Váš účet není zatím aktivován! Zkontrolujte prosím i SPAM složku ve vašem Mailu','warning');
                 //$this->redirect('User:');
