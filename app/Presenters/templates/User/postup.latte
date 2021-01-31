@@ -1,0 +1,59 @@
+{block content}
+<br />
+<div class="container card-body">
+<h2>Itemy na schválení</h2>
+<br /><br />
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="name"><b>Název/Jméno</b></label>
+                <p>{$item->name}</p>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <label for="smallContent"><b>Krátký popis</b></label>
+             <p>{$item->smallP}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="name"><b>Schváleno od Inventora?</b></label>
+                {if $item->ntor_Agree == 1}
+                <p>Ano</p>
+                {/if}
+                {if $item->ntor_Agree == 0}
+                <p>Ne</p>
+                {/if}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <label for="smallContent"><b>Schváleno od Investora?</b></label>
+                {if $item->stor_Agree == 1}
+                <p>Ano</p>
+                {/if}
+                {if $item->stor_Agree == 0}
+                <p>Ne</p>
+                {/if}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <label for="bigContent"><b>Delší popis</b></label>
+             <p>{$item->fullP}</p>
+        </div>
+    </div>
+    <hr />
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="d-flex flex-row-reverse">
+                <a n:href="User:interested, $item->idea_Id" class="btn btn-primary">Zpět</a>
+                <p class="text-white">|</p>
+                <a n:href="User:postup, $item->id, 1" class="btn btn-danger">Nesplněné</a>
+                <p class="text-white">|</p>
+                <a n:href="User:postup, $item->id, 2" class="btn btn-success">Splněné</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -26,7 +26,11 @@
             <div class="row">
             <!--Zde bude foreach na vypisování věcí k dohodnutí-->
                 <!--Po klinutí se spustí modalka-->
-                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#modalInformation">Název toho k dohodnutí</button>
+                {foreach $items as $item}
+                  {if $item->ntor_Agree == 0 && $item->stor_Agree == 0}
+                    <a n:href="User:postup, $item->id, 0" class="btn btn-light">{$item->name}</a>
+                  {/if}
+                {/foreach}
                 <br />
             </div>
             <!--Konec toho fereache-->
@@ -45,34 +49,16 @@
                   <h3>Na schválení</h3>
               </div>
               <div class="col-sm-6">
-                  <a n:href="User:items" class="btn btn-success">Přidat položku</a>
+                  <a n:href="User:items, $idea->id" class="btn btn-success">Přidat položku</a>
               </div>
             </div>
             <br />
             <!--Podobné jako před tím, také se otevře modalka-->
-            <button type="button" class="btn btn-light" data-toggle="modal" data-target="#modalInformation">Označeno jako splněno/nesplněno</button>
+            {foreach $items as $item}
+              {if ($item->ntor_Agree == 0 && $item->stor_Agree == 1) || ($item->ntor_Agree == 1 && $item->stor_Agree == 0)}
+                <a n:href="User:postup, $item->id, 0" class="btn btn-light">{$item->name} - ke schválení</a>
+              {/if}
+            {/foreach}
         </div>
     </div>
-
-    <!--Začátek modalky, když uživatel rozklikne dohodnutí-->
-    <div class="modal fade" id="modalInformation" tabindex="-1" role="dialog" aria-labelledby="modalInformation" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Název dohodnutí</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Popis dohodnutí
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Nesplněné</button>
-        <button type="button" class="btn btn-success">Splněné</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!--Konec modalky, když uživatel rozklikne dohodnutí-->
 </div>

@@ -69,9 +69,9 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
         }else {
             //$this->template->idea = $row;
+            $this->template->r = $idea->zaplaceno;
             $this['ideaForm']->setDefaults($idea->toArray());
         }
-
     }
 
     public function renderInventor(): void{
@@ -84,6 +84,37 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
         $this->template->vysledky = $this->database->table('ideas')->where('id_ntor ?', $this->getUser()->id);
 
+    }
+
+    public function renderPostup($i, $what): void {
+        $this->template->idea_Id = $i;
+        $this->template->item = $this->database->table('items')->where('id ?', $i)->fetch();
+        if($what == 1) {
+            if($this->template->user = $this->getUser()->roles["who"] == 'ntor'){
+                $this->database->query('UPDATE items SET', [
+                    'ntor_Agree' => 0
+                ], 'WHERE id=?', $i);
+            }
+            else if ($this->template->user = $this->getUser()->roles["who"] == 'stor'){
+                $this->database->query('UPDATE items SET', [
+                    'stor_Agree' => 0
+                ], 'WHERE id=?', $i);
+            }
+            $this->redirect('User:interested', $this->template->item->idea_Id);
+        }
+        else if($what == 2) {
+            if($this->template->user = $this->getUser()->roles["who"] == 'ntor'){
+                $this->database->query('UPDATE items SET', [
+                    'ntor_Agree' => 1
+                ], 'WHERE id=?', $i);
+            }
+            else if ($this->template->user = $this->getUser()->roles["who"] == 'stor'){
+                $this->database->query('UPDATE items SET', [
+                    'stor_Agree' => 1
+                ], 'WHERE id=?', $i);
+            }
+            $this->redirect('User:interested', $this->template->item->idea_Id);
+        }
     }
 
 
@@ -111,9 +142,6 @@ final class UserPresenter extends Nette\Application\UI\Presenter
     }
 
     public function renderInterested($i): void{
-
-
-
         if (!$this->getUser()->isLoggedIn())
             $this->redirect('User:');
 
@@ -123,6 +151,7 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
 
         $row = $this->database->fetch('SELECT * FROM ideas WHERE id = ?', $i);
+        $this->template->items = $this->database->table('items')->where('idea_Id=?', $i);
         //$row = $this->database->table('ideas')->where('is ?', $i);
 
         if($row == false || $i == 0){
@@ -396,13 +425,25 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         }
     }
 
+    public function renderItems($i): void {
+        $this->template->idea_Id = $i;
+    }
+
     public function itemFormSucceeded(UI\Form $form, \stdClass $item): void
     {
+        $item_Id = $this->getParameter('i');
         if ($this->getUser()->isLoggedIn()) {
-            $post = $this->database->table('items')->insert($item);
+            $this->database->query('INSERT INTO items', [
+                'name' => $item->name,
+                'smallP' => $item->smallP,
+                'fullP' => $item->fullP,
+                'idea_Id' => $item_Id,
+                'ntor_Agree' => 0,
+                'stor_Agree' => 0
+            ]);
 
             $this->flashMessage("Item byl úspěšně přidán.", 'success');
-            $this->redirect('User:interested');
+            $this->redirect('User:interested', $item_Id);
         }
     }
 
@@ -446,11 +487,11 @@ final class UserPresenter extends Nette\Application\UI\Presenter
             ->addRule($form::MAX_LENGTH, 'Text je příliš dlouhý', 10000);
 
 
-        $form->addSubmit('send', 'Přidat a zaplatit! ⓘ')
+        $form->addSubmit('send', 'Přidat a zaplatit!')
             ->setHtmlAttribute('class', 'btn btn-primary mt-3 mx-auto fbud');
 
-        $form->addSubmit('send2', 'Přidat! ⓘ')
-            ->setHtmlAttribute('class', 'btn btn-light mt-3 mx-auto fbud');
+        $form->addSubmit('send2', 'Přidat!')
+            ->setHtmlAttribute('class', 'btn btn-primary mt-3 mx-auto fbud');
 
         $form->addProtection();
         $form->onSuccess[] = [$this, 'ideaFormSucceeded'];
