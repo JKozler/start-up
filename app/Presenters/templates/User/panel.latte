@@ -27,7 +27,7 @@
             <div class="d-flex flex-row-reverse">
                 <a n:href="User:account" class="btn btn-info">ⓘ Můj účet</a>
                 <p class="text-white">|</p>
-                <a n:href="User:involved" class="btn btn-primary">Zapojené</a>
+                <a n:href="User:involved" class="btn btn-primary">Zobrazené</a>
             </div>
         </div>
   </div>
@@ -50,7 +50,7 @@
             <p class="card-text">{$r->castka},- Kč</p>
             <p class="card-text"><b>Nabízíme - {$r->reward}</b></p>
             {if $r->zaplaceno == 1}
-            <a n:href="User:interested, $r->id" class="btn btn-primary">Zajímá mě!</a>
+            <a n:href="User:interested $r->id, $r->id_ntor" class="btn btn-primary">Zajímá mě!</a>
             <!--Když klikne na "Zajímá mě!" a uživatel nemá zaplacený poplatek, může jej zaplatit sám nebo vyzvat inventora - pro obě varianty se zobarzí modalka-->
             {/if}
             {if $r->zaplaceno == 0}

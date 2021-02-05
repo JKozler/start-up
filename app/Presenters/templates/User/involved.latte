@@ -5,7 +5,7 @@
     <div class="col-sm-9">
         <div class="row">
             <div class="col-sm-4">
-                <h3>Zapojené projekty</h3>
+                <h3>Zobrazené projekty</h3>
             </div>
             <div class="col-sm-3">
             <label for="search">Vyhledejte projekt:</label>
@@ -24,9 +24,7 @@
     </div>
         <div class="col-sm-3">
             <div class="d-flex flex-row-reverse">
-                <button type="button" class="btn btn-info">
-                    ⓘ Můj účet
-                </button>
+                <a n:href="User:account" class="btn btn-info">ⓘ Můj účet</a>
                 <p class="text-white">|</p>
                 <a n:href="User:panel" class="btn btn-primary">Hlavní stránka</a>
             </div>
@@ -38,17 +36,18 @@
 <br>
 
 
+{foreach $ideas as $idea}
 <section class="py-3">
     <div class="container">
-    <!--Tedy je začátek logů jednotlivých projektů-->
         <div class="card text-center">
         <div class="card-header">
-            Název
+            {$idea->project_Name}
         </div>
         <div class="card-body">
-            <h5 class="card-title">O co jde?</h5>
-            <a n:href="User:interested" class="btn btn-primary">Novinky/zprávy</a>
+            <h5 class="card-title">Projekt uživatele - {$idea->ntor_Name}</h5>
+            <a n:href="User:interested, $idea->idea_Id, $idea->ntor_Id" class="btn btn-primary">Novinky/zprávy</a>
         </div>
         </div>
     </div>
 </section>
+{/foreach}

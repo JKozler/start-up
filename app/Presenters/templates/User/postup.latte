@@ -48,11 +48,9 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="d-flex flex-row-reverse">
-                <a n:href="User:interested, $item->idea_Id" class="btn btn-primary">Zpět</a>
+                <a n:href="User:postup, $item->id, 1, $ntor, $stor" class="btn btn-danger">Nesplněné</a>
                 <p class="text-white">|</p>
-                <a n:href="User:postup, $item->id, 1" class="btn btn-danger">Nesplněné</a>
-                <p class="text-white">|</p>
-                <a n:href="User:postup, $item->id, 2" class="btn btn-success">Splněné</a>
+                <a n:href="User:postup, $item->id, 2, $ntor, $stor" class="btn btn-success">Splněné</a>
             </div>
         </div>
     </div>

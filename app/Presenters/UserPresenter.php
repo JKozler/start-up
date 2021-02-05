@@ -18,6 +18,7 @@ use Nette\Security\Passwords;
 use Nette\Mail\Message;
 use Nette\Security\IAuthenticator;
 use App\Model\UserManager;
+use \stdClass;
 
 final class UserPresenter extends Nette\Application\UI\Presenter
 {
@@ -83,11 +84,14 @@ final class UserPresenter extends Nette\Application\UI\Presenter
             $this->redirect('User:panel');
 
         $this->template->vysledky = $this->database->table('ideas')->where('id_ntor ?', $this->getUser()->id);
+        $this->template->noti = $this->database->table('idea_notification');
 
     }
 
-    public function renderPostup($i, $what): void {
+    public function renderPostup($i, $what, $ntor, $stor): void {
         $this->template->idea_Id = $i;
+        $this->template->ntor = $ntor;
+        $this->template->stor = $stor;
         $this->template->item = $this->database->table('items')->where('id ?', $i)->fetch();
         if($what == 1) {
             if($this->template->user = $this->getUser()->roles["who"] == 'ntor'){
@@ -100,7 +104,10 @@ final class UserPresenter extends Nette\Application\UI\Presenter
                     'stor_Agree' => 0
                 ], 'WHERE id=?', $i);
             }
-            $this->redirect('User:interested', $this->template->item->idea_Id);
+            if ($this->template->user = $this->getUser()->roles["who"] == 'stor')
+                $this->redirect('User:interested', $this->template->item->idea_Id, $ntor);
+            else
+                $this->redirect('User:interested', $this->template->item->idea_Id, $stor);
         }
         else if($what == 2) {
             if($this->template->user = $this->getUser()->roles["who"] == 'ntor'){
@@ -113,7 +120,10 @@ final class UserPresenter extends Nette\Application\UI\Presenter
                     'stor_Agree' => 1
                 ], 'WHERE id=?', $i);
             }
-            $this->redirect('User:interested', $this->template->item->idea_Id);
+            if ($this->template->user = $this->getUser()->roles["who"] == 'stor')
+                $this->redirect('User:interested', $this->template->item->idea_Id, $ntor);
+            else
+                $this->redirect('User:interested', $this->template->item->idea_Id, $stor);
         }
     }
 
@@ -127,6 +137,8 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
         if($this->template->user = $this->getUser()->roles["who"] == 'ntor')
             $this->redirect('User:inventor');
+
+        $this->template->ideas = $this->database->table('idea_notification')->where('stor_Id=?', $this->getUser()->id)->fetchAll();
     }
 
     public function renderPanel(): void{
@@ -141,9 +153,43 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         $this->template->vysledky = $this->database->table('ideas');
     }
 
-    public function renderInterested($i): void{
+    public function renderInterested($i, $id): void{
         if (!$this->getUser()->isLoggedIn())
             $this->redirect('User:');
+
+        if($this->template->user = $this->getUser()->roles["who"] == 'stor'){
+            $idea = $this->database->table('ideas')->where('id=?', $i)->fetch();
+            $noti = $this->database->table('idea_notification')->where('idea_Id=?', $idea->id)->fetchAll();
+            $stor = $this->database->table('user_stor')->where('id=?', $this->getUser()->id)->fetch();
+            $ntor = $this->database->table('user_ntor')->where('id=?', $idea->id_ntor)->fetch();
+            $much = 0;
+            foreach ($noti as &$a) {
+                if($a->nstor_Name != $stor->username)
+                    $much++;
+            }
+            if($much == count($noti)){
+                $this->database->query('INSERT INTO idea_notification', [
+                    'stor_Id' =>  $this->getUser()->id,
+                    'idea_Id' => $i,
+                    'ntor_Id' => $idea->id_ntor,
+                    'nstor_Name' => $stor->username,
+                    'project_Name' => $idea->name,
+                    'ntor_Name' => $ntor->username
+                    
+                ]);
+            }
+            $this->template->name = $ntor->username;
+            $this->template->items = $this->database->table('items')->where('idea_Id=? AND ntor_Id=? AND stor_Id=?', $i, $id, $this->getUser()->id);
+            $this->template->ntor = $id;
+            $this->template->stor = $this->getUser()->id;
+        }
+        else {
+            $stor = $this->database->table('user_stor')->where('id=?', $id)->fetch();
+            $this->template->name = $stor->username;
+            $this->template->items = $this->database->table('items')->where('idea_Id=? AND stor_Id=? AND ntor_Id=?', $i, $id, $this->getUser()->id);
+            $this->template->stor = $id;
+            $this->template->ntor = $this->getUser()->id;
+        }
 
 
         //if($this->template->user = $this->getUser()->roles["who"] == 'ntor')
@@ -151,7 +197,6 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
 
         $row = $this->database->fetch('SELECT * FROM ideas WHERE id = ?', $i);
-        $this->template->items = $this->database->table('items')->where('idea_Id=?', $i);
         //$row = $this->database->table('ideas')->where('is ?', $i);
 
         if($row == false || $i == 0){
@@ -170,6 +215,10 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
 
     // NTOR
+    public function renderReaction(): void {
+        $this->template->ideas = $this->database->table('idea_notification')->where('ntor_Id=?', $this->getUser()->id)->fetchAll();
+    }
+
     protected function createComponentRegistrationForm(): UI\Form
     {
         //https://doc.nette.org/cs/3.0/form-rendering
@@ -425,13 +474,17 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         }
     }
 
-    public function renderItems($i): void {
+    public function renderItems($i, $ntor, $stor): void {
         $this->template->idea_Id = $i;
+        $this->template->ntor = $ntor;
+        $this->template->stor = $stor;
     }
 
     public function itemFormSucceeded(UI\Form $form, \stdClass $item): void
     {
         $item_Id = $this->getParameter('i');
+        $ntor = $this->getParameter('ntor');
+        $stor = $this->getParameter('stor');
         if ($this->getUser()->isLoggedIn()) {
             $this->database->query('INSERT INTO items', [
                 'name' => $item->name,
@@ -439,11 +492,17 @@ final class UserPresenter extends Nette\Application\UI\Presenter
                 'fullP' => $item->fullP,
                 'idea_Id' => $item_Id,
                 'ntor_Agree' => 0,
-                'stor_Agree' => 0
+                'stor_Agree' => 0,
+                'ntor_Id' => $ntor,
+                'stor_Id' => $stor
+                
             ]);
 
             $this->flashMessage("Item byl úspěšně přidán.", 'success');
-            $this->redirect('User:interested', $item_Id);
+            if ($this->getUser()->roles["who"] == 'ntor')
+                $this->redirect('User:interested', $item_Id, $stor);
+            else
+            $this->redirect('User:interested', $item_Id, $ntor);
         }
     }
 
