@@ -14,6 +14,7 @@ class UserManager implements IAuthenticator
     private $table_ntor;
     private $table_stor;
     private $table_ideas;
+    private $table_messages;
     private $table_obory;
     private $passwords;
 
@@ -23,6 +24,7 @@ class UserManager implements IAuthenticator
         $this->table_ntor = $database->table('user_ntor');
         $this->table_stor = $database->table('user_stor');
         $this->table_ideas = $database->table('ideas');
+        $this->table_messages = $database->table('messages');
         $this->table_obory = $database->table('obory');
         $this->passwords = $passwords;
     }
@@ -103,7 +105,16 @@ class UserManager implements IAuthenticator
     }
 
 
+    public function createMessage($id_idea, $id_ntor, $id_stor, $message, $sender){
 
+        $this->table_messages->insert([
+            'id_idea'=>$id_idea,
+            'id_ntor'=>$id_ntor,
+            'id_stor'=>$id_stor,
+            'message'=>$message,
+            'sender'=>$sender,
+        ]);
+    }
 
     public function createIdea($id_ntor, $name, $castka, $reward,$easy, $full, $id_obory){
 

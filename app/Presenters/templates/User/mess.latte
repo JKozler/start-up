@@ -13,7 +13,7 @@
 								<img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
 							</div>
 							<div class="flex-grow-1 pl-3">
-								<strong>Jméno druhého</strong>
+								<strong>{$second}</strong>
 							</div>
 						</div>
 					</div>
@@ -21,40 +21,103 @@
 					<div class="position-relative">
 						<div class="chat-messages p-4">
 
-                            <!--Zpráva od tebe-->
-							<div class="chat-message-right pb-4">
-								<div>
-									<img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
-									<div class="text-muted small text-nowrap mt-2">2:33 am</div>
-								</div>
-								<div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-									<div class="font-weight-bold mb-1">You</div>
-									Lorem ipsum dolor sit amet, vis erat denique in, dicunt prodesset te vix.
-								</div>
-							</div>
-                            <!--Konec zprávy od tebe-->
 
-                            <!--Zpráva od druhého-->
-							<div class="chat-message-left pb-4">
-								<div>
-									<img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
-									<div class="text-muted small text-nowrap mt-2">2:34 am</div>
-								</div>
-								<div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
-									<div class="font-weight-bold mb-1">Jméno druhého</div>
-									Sit meis deleniti eu, pri vidit meliore docendi ut, an eum erat animal commodo.
-								</div>
-							</div>
-                            <!--Konec zprávy od druhého-->
+							{if count($zpravy) < 1 }
+
+								<h2>Zatím zde nic není.</h2>
+
+							{/if}
+
+							{foreach $zpravy as $z}
+
+								{if $userID == $z->id_ntor}
+
+									{if $z->sender == 0}
+										<!--Zpráva od tebe N-->
+										<div class="chat-message-right pb-4">
+											<div>
+												<img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+												<div class="text-muted small text-nowrap mt-2">{$z->date}</div>
+											</div>
+											<div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+												<div class="font-weight-bold mb-1">You</div>
+												{$z->message}
+											</div>
+										</div>
+										<!--Konec zprávy od tebe-->
+									{else}
+										<!--Zpráva od druhého N-->
+										<div class="chat-message-left pb-4">
+											<div>
+												<img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+												<div class="text-muted small text-nowrap mt-2">{$z->date}</div>
+											</div>
+											<div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+												<div class="font-weight-bold mb-1">{$second}</div>
+												{$z->message}
+											</div>
+										</div>
+										<!--Konec zprávy od druhého-->
+									{/if}
+
+
+
+
+								{else}
+
+
+									{if $z->sender == 1}
+										<!--Zpráva od tebe S-->
+										<div class="chat-message-right pb-4">
+											<div>
+												<img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+												<div class="text-muted small text-nowrap mt-2">{$z->date}</div>
+											</div>
+											<div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+												<div class="font-weight-bold mb-1">You</div>
+												{$z->message}
+											</div>
+										</div>
+										<!--Konec zprávy od tebe-->
+									{else}
+										<!--Zpráva od druhého S-->
+										<div class="chat-message-left pb-4">
+											<div>
+												<img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+												<div class="text-muted small text-nowrap mt-2">{$z->date}</div>
+											</div>
+											<div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+												<div class="font-weight-bold mb-1">{$second}</div>
+												{$z->message}
+											</div>
+										</div>
+										<!--Konec zprávy od druhého-->
+									{/if}
+
+
+
+								{/if}
+
+
+
+
+
+							{/foreach}
+
+
 						</div>
 					</div>
 
+                    {form sendMessageForm}
 					<div class="flex-grow-0 py-3 px-4 border-top">
 						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Type your message">
-							<button class="btn btn-success">Poslat</button>
+                            {input obsah}
+							<!--<input type="text" class="form-control" placeholder="Type your message">-->
+                            {input send}
+							<!--<button class="btn btn-success">Poslat</button>-->
 						</div>
 					</div>
+                    {/form}
 
 				</div>
 			</div>

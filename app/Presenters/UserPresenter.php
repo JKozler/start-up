@@ -39,6 +39,129 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         $this->userManager = $userManager;
     }
 
+    /* MESSANGER */
+
+    private $idSecond;
+    private $idIdea;
+
+    public function renderMess($idea, $ntor, $stor): void{
+
+        if (!$this->getUser()->isLoggedIn())
+            $this->redirect('User:');
+
+        $uid = $this->getUser()->id;
+
+        if($this->getUser()->roles["who"] == 'ntor'){
+            if($uid =! $ntor){
+                $this->flashMessage('Přístup odepřen','danger');
+                $this->redirect('User:');
+            }
+
+            $this->template->second = $this->database->table('user_stor')->where('id ?', $stor)->fetch()->username;
+            //$this->template->ntorName = $this->getUser()->roles["user_name"];
+
+            $this->idSecond = $stor;
+
+            $session = $this->getSession();
+            $sessionSection = $session->getSection('Messanger');
+            $sessionSection->idSecond = $stor;
+            $sessionSection->idIdea = $idea;
+            $sessionSection->uid = $uid;
+
+
+        } else if($this->getUser()->roles["who"] == 'stor'){
+
+            if($uid =! $stor){
+                $this->flashMessage('Přístup odepřen','danger');
+                $this->redirect('User:');
+            }
+
+            //$this->template->storName = $this->getUser()->roles["user_name"];
+            $this->template->second = $this->database->table('user_ntor')->where('id ?', $ntor)->fetch()->username;
+
+            $this->idSecond = $ntor;
+
+            /*$session = $this->getSession();
+            $sessionSection = $session->getSection('Messanger');
+            $sessionSection->idSecond = $ntor;
+            $sessionSection->idIdea = $idea;
+            $sessionSection->uid = $uid;*/
+
+        } else{
+            $this->flashMessage('Přístup odepřen #4','danger');
+            $this->redirect('User:');
+        }
+
+        $this->idIdea = $idea;
+
+        $this->template->zpravy = $this->database->table('messages')->where('id_idea ?', $idea)->where('id_stor ?', $stor);
+        $this->template->userID = $this->getUser()->id;
+    }
+
+    protected function createComponentSendMessageForm(): Form
+    {
+        $form = new Form;
+
+        $form->addText('obsah', 'obsah:')
+            ->setRequired()
+            ->setDefaultValue('Type your message')
+            ->setHtmlAttribute('class', 'form-control')
+            ->addRule($form::MAX_LENGTH, 'Max je %d znaků', 510);
+
+        $form->addHidden('userid')
+            ->setDefaultValue($this->getUser()->id);
+
+        $form->addSubmit('send', 'Odeslat')
+            ->setHtmlAttribute('class', 'btn btn-success');
+
+        $form->addProtection();
+        $form->onSuccess[] = [$this, 'sendMessageFormSucceeded'];
+        return $form;
+    }
+
+    public function sendMessageFormSucceeded(UI\Form $form, \stdClass $values): void
+    {
+        $idea = $this->getParameter('idea');
+        $ntor = $this->getParameter('ntor');
+        $stor = $this->getParameter('stor');
+
+        $session = $this->getSession();
+        $sessionSection = $session->getSection('Messanger');
+        //if(isset($sessionSection->idSecond) && isset($sessionSection->idIdea) && isset($sessionSection->uid)){
+        if(isset($idea) && isset($ntor) && isset($stor)){
+
+            $uid = $this->getUser()->id;
+
+            if($values->userid != $ntor && $values->userid != $stor) {
+                $this->flashMessage('Invalidni uzivatel','danger');
+                $this->redirect('User:');
+
+            }
+
+            if($this->getUser()->roles["who"] == 'ntor'){
+
+                $this->userManager->createMessage($idea,$ntor,$stor,$values->obsah,0);
+
+                $this->redirect('User:mess',[$idea,$ntor,$stor]);
+
+            } else {
+
+                $this->userManager->createMessage($idea,$ntor,$stor,$values->obsah,1);
+
+                $this->redirect('User:mess',[$idea,$ntor,$stor]);
+            }
+
+
+
+        } else {
+            $this->flashMessage('Invalidni data','danger');
+            $this->redirect('User:');
+
+        }
+
+
+    }
+
     /* INVENTOR PAGES */
     public function renderAdd(): void{
 
