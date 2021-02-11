@@ -29,6 +29,7 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
     private $table_ntor;
     private $table_stor;
+    private $searchString = "";
 
     public function __construct(Nette\Database\Context $database, Passwords $passwords, UserManager $userManager)
     {
@@ -96,6 +97,54 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
         $this->template->zpravy = $this->database->table('messages')->where('id_idea ?', $idea)->where('id_stor ?', $stor);
         $this->template->userID = $this->getUser()->id;
+    }
+
+    protected function createComponentSendSearchForm(): Form
+    {
+        if($this->searchString == ""){
+
+        }
+        else{
+
+        }
+        $form = new Form;
+
+        $form->addText('obsah', 'Hledat..')
+            ->setHtmlAttribute('class', 'form-control text-center')
+            ->addRule($form::MAX_LENGTH, 'Max je %d znaků', 256);
+
+        $form->addSubmit('send', 'Odeslat')
+            ->setHtmlAttribute('class', 'btn btn-success');
+
+        $form->onSuccess[] = [$this, 'sendSearchFormSucceeded'];
+        return $form;
+    }
+
+    protected function createComponentSendSearchPanelForm(): Form
+    {
+        $form = new Form;
+
+        $form->addText('obsah', 'Hledat..')
+            ->setHtmlAttribute('class', 'form-control text-center')
+            ->addRule($form::MAX_LENGTH, 'Max je %d znaků', 256);
+
+        $form->addSubmit('send', 'Odeslat')
+            ->setHtmlAttribute('class', 'btn btn-success');
+
+        $form->onSuccess[] = [$this, 'sendSearchPanelFormSucceeded'];
+        return $form;
+    }
+
+    public function sendSearchFormSucceeded(UI\Form $form, \stdClass $values): void
+    {
+        $this->searchString = $values->obsah;
+        $this->renderInventor();
+    }
+
+    public function sendSearchPanelFormSucceeded(UI\Form $form, \stdClass $values): void
+    {
+        $this->searchString = $values->obsah;
+        $this->renderPanel();
     }
 
     protected function createComponentSendMessageForm(): Form
@@ -205,9 +254,15 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
         if(!$this->template->user = $this->getUser()->roles["who"] == 'ntor')
             $this->redirect('User:panel');
-
-        $this->template->vysledky = $this->database->table('ideas')->where('id_ntor ?', $this->getUser()->id);
-        $this->template->noti = $this->database->table('idea_notification');
+        
+        if($this->searchString == ""){
+            $this->template->vysledky = $this->database->table('ideas')->where('id_ntor ?', $this->getUser()->id);
+            $this->template->noti = $this->database->table('idea_notification');
+        }
+        else {
+            $this->template->vysledky = $this->database->query('SELECT * FROM ideas WHERE id_ntor=? and name=?', $this->getUser()->id, $this->searchString)->fetchAll();
+            $this->template->noti = $this->database->table('idea_notification');
+        }
 
     }
 
@@ -272,8 +327,13 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
         if($this->template->user = $this->getUser()->roles["who"] == 'ntor')
             $this->redirect('User:inventor');
-
-        $this->template->vysledky = $this->database->table('ideas');
+        
+        if($this->searchString == ""){
+            $this->template->vysledky = $this->database->table('ideas');
+        }
+        else {
+            $this->template->vysledky = $this->database->query('SELECT * FROM ideas WHERE name=?', $this->searchString)->fetchAll();
+        }
     }
 
     public function renderInterested($i, $id): void{

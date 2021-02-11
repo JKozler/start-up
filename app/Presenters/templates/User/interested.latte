@@ -12,10 +12,11 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-7">
+      <a n:href="User:info-interested" class="btn btn-link">Informace</a>
     </div>
     <div class="col-sm-5 card-body bg-blue">
       <div class="d-flex flex-row-reverse">
-          <h5>Spojení mezi <b>{$name}</b> a Vámi.</h5>
+          <p><h5>Spojení mezi <b>{$name}</b> a Vámi.</h5>
       </div>
     </div>
   </div>
@@ -41,11 +42,13 @@
             <div class="row">
             <!--Zde bude foreach na vypisování věcí k dohodnutí-->
                 <!--Po klinutí se spustí modalka-->
-                {foreach $items as $item}
-                  {if $item->ntor_Agree == 0 && $item->stor_Agree == 0}
-                    <a n:href="User:postup, $item->id, 0, $ntor, $stor" class="btn btn-light">{$item->name}</a>
-                  {/if}
-                {/foreach}
+                <div class="col">
+                  {foreach $items as $item}
+                    {if $item->ntor_Agree == 0 && $item->stor_Agree == 0}
+                      <a n:href="User:postup, $item->id, 0, $ntor, $stor" class="btn btn-light">{$item->name}</a><br /><br />
+                    {/if}
+                  {/foreach}
+                </div>
                 <br />
             </div>
             <!--Konec toho fereache-->
@@ -69,11 +72,15 @@
             </div>
             <br />
             <!--Podobné jako před tím, také se otevře modalka-->
-            {foreach $items as $item}
-              {if ($item->ntor_Agree == 0 && $item->stor_Agree == 1) || ($item->ntor_Agree == 1 && $item->stor_Agree == 0)}
-                <a n:href="User:postup, $item->id, 0, $ntor, $stor" class="btn btn-light">{$item->name} - ke schválení</a>
-              {/if}
-            {/foreach}
+            <div class="row">
+              <div class="col">
+                {foreach $items as $item}
+                  {if ($item->ntor_Agree == 0 && $item->stor_Agree == 1) || ($item->ntor_Agree == 1 && $item->stor_Agree == 0)}
+                    <a n:href="User:postup, $item->id, 0, $ntor, $stor" class="btn btn-light">{$item->name} - ke schválení</a><br /><br />
+                  {/if}
+                {/foreach}
+              </div>
+            </div>
         </div>
     </div>
 </div>
