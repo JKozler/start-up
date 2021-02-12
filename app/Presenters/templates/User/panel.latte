@@ -4,26 +4,21 @@
 <div class="container card-body">
   <div class="row">
     <div class="col-sm-9">
+     {form sendSearchPanelForm}
         <div class="row">
             <div class="col-sm-3">
-                <div><b>User name</b></div>
+              <label for="search">Vyhledejte projekt:</label>
+                {input obsah}
             </div>
             <div class="col-sm-3">
-            <label for="search">Vyhledejte projekt:</label>
-              {form sendSearchPanelForm}
-                  {input obsah}
-              {/form}
+              <label for="sel1">Vyberte si obor projektu:</label>
+                  {input obory}
             </div>
             <div class="col-sm-3">
-                <label for="sel1">Vyberte si obor projektu:</label>
-            <select class="form-control" id="sel1">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-            </select>
+                {input send}
             </div>
         </div>
+      {/form}
     </div>
         <div class="col-sm-3">
             <div class="d-flex flex-row-reverse">

@@ -30,6 +30,7 @@ final class UserPresenter extends Nette\Application\UI\Presenter
     private $table_ntor;
     private $table_stor;
     private $searchString = "";
+    private $searchObor = 11;
 
     public function __construct(Nette\Database\Context $database, Passwords $passwords, UserManager $userManager)
     {
@@ -122,16 +123,36 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
     protected function createComponentSendSearchPanelForm(): Form
     {
+        $obory = $this->database->table('obory')->fetchPairs('id', 'name');
         $form = new Form;
 
         $form->addText('obsah', 'Hledat..')
             ->setHtmlAttribute('class', 'form-control text-center')
             ->addRule($form::MAX_LENGTH, 'Max je %d znaků', 256);
 
-        $form->addSubmit('send', 'Odeslat')
+        $form->addSelect('obory', 'Obor:', $obory)
+            ->setDefaultValue(11)
+            ->setHtmlAttribute('class', 'form-control');
+
+        $form->addSubmit('send', 'Vyhledat')
             ->setHtmlAttribute('class', 'btn btn-success');
 
         $form->onSuccess[] = [$this, 'sendSearchPanelFormSucceeded'];
+        return $form;
+    }
+
+    protected function createComponentSendSearchZobrazeneForm(): Form
+    {
+        $form = new Form;
+
+        $form->addText('obsah', 'Hledat..')
+            ->setHtmlAttribute('class', 'form-control text-center')
+            ->addRule($form::MAX_LENGTH, 'Max je %d znaků', 256);
+
+        $form->addSubmit('send', 'Vyhledat')
+            ->setHtmlAttribute('class', 'btn btn-success');
+
+        $form->onSuccess[] = [$this, 'sendSearchZobrazeneFormSucceeded'];
         return $form;
     }
 
@@ -141,9 +162,20 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         $this->renderInventor();
     }
 
+    public function sendSearchZobrazeneFormSucceeded(UI\Form $form, \stdClass $values): void
+    {
+        $this->searchString = $values->obsah;
+        if($this->template->user = $this->getUser()->roles["who"] == 'stor')
+            $this->renderInvolved();
+        else
+            $this->renderReaction();
+    }
+
     public function sendSearchPanelFormSucceeded(UI\Form $form, \stdClass $values): void
     {
         $this->searchString = $values->obsah;
+        if($values->obory != 11)
+            $this->searchObor = $values->obory;
         $this->renderPanel();
     }
 
@@ -316,7 +348,12 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         if($this->template->user = $this->getUser()->roles["who"] == 'ntor')
             $this->redirect('User:inventor');
 
-        $this->template->ideas = $this->database->table('idea_notification')->where('stor_Id=?', $this->getUser()->id)->fetchAll();
+        if($this->searchString == ""){
+            $this->template->ideas = $this->database->table('idea_notification')->where('stor_Id=?', $this->getUser()->id)->fetchAll();
+        }
+        if($this->searchString != ""){
+            $this->template->ideas = $this->database->query('SELECT * FROM idea_notification WHERE project_name=? and stor_Id=?', $this->searchString, $this->getUser()->id)->fetchAll();
+        }
     }
 
     public function renderPanel(): void{
@@ -328,11 +365,17 @@ final class UserPresenter extends Nette\Application\UI\Presenter
         if($this->template->user = $this->getUser()->roles["who"] == 'ntor')
             $this->redirect('User:inventor');
         
-        if($this->searchString == ""){
+        if($this->searchString == "" && $this->searchObor == 11){
             $this->template->vysledky = $this->database->table('ideas');
         }
-        else {
+        if($this->searchString != "" && $this->searchObor == 11){
             $this->template->vysledky = $this->database->query('SELECT * FROM ideas WHERE name=?', $this->searchString)->fetchAll();
+        }
+        if($this->searchString == "" && $this->searchObor != 11){
+            $this->template->vysledky = $this->database->query('SELECT * FROM ideas WHERE id_obory=?', $this->searchObor)->fetchAll();
+        }
+        if($this->searchString != "" && $this->searchObor != 11){
+            $this->template->vysledky = $this->database->query('SELECT * FROM ideas WHERE name=? and id_obory=?', $this->searchString, $this->searchObor)->fetchAll();
         }
     }
 
@@ -399,7 +442,12 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
     // NTOR
     public function renderReaction(): void {
-        $this->template->ideas = $this->database->table('idea_notification')->where('ntor_Id=?', $this->getUser()->id)->fetchAll();
+        if($this->searchString == ""){
+            $this->template->ideas = $this->database->table('idea_notification')->where('ntor_Id=?', $this->getUser()->id)->fetchAll();
+        }
+        if($this->searchString != ""){
+            $this->template->ideas = $this->database->query('SELECT * FROM idea_notification WHERE project_name=? and ntor_Id=?', $this->searchString, $this->getUser()->id)->fetchAll();
+        }
     }
 
     protected function createComponentRegistrationForm(): UI\Form
