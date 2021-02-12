@@ -43,7 +43,7 @@
             <div class="card-body">
                 <h5 class="card-title">{$r->easy}</h5>
                 <p class="card-text">{$r->castka},- Kč</p>
-                <p><a n:if="$noti->Where('idea_Id ?', $r->id)->fetch()" n:href="User:interested,$r->id" class="btn text-primary">Nové zprávy - když ano</a></p>
+                <p><a n:if="$noti->Where('idea_Id ?', $r->id)->fetch()" n:href="User:interested,$r->id, $r->id_ntor" class="btn text-primary">Nové zprávy</a></p>
                 <a n:href="User:edit, $r->id" class="btn btn-primary">Upravit</a>
             </div>
             <div n:if="$r->zaplaceno == 1" class="card-footer text-muted">
