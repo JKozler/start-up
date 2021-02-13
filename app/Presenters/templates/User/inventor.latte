@@ -38,7 +38,20 @@
     <div class="container" id="{$r->id}">
         <div class="card text-center">
             <div class="card-header">
-                {$r->name}
+                <div class="row">
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        {$r->name}
+                    </div>
+                    <div class="col-sm-4 text-right">
+                    {if $r->propagovano != 1}
+                        <a href="#">Propagovat</a>
+                    {else}
+                        <a>Propagováno</a>
+                    {/if}
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <h5 class="card-title">{$r->easy}</h5>

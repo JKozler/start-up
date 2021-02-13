@@ -366,15 +366,19 @@ final class UserPresenter extends Nette\Application\UI\Presenter
             $this->redirect('User:inventor');
         
         if($this->searchString == "" && $this->searchObor == 11){
+            $this->template->propag = $this->database->query('SELECT * FROM ideas WHERE propagovano=1')->fetchAll();
             $this->template->vysledky = $this->database->table('ideas');
         }
         if($this->searchString != "" && $this->searchObor == 11){
+            $this->template->propag = $this->database->query('SELECT * FROM ideas WHERE name=? and propagovano=1', $this->searchString)->fetchAll();
             $this->template->vysledky = $this->database->query('SELECT * FROM ideas WHERE name=?', $this->searchString)->fetchAll();
         }
         if($this->searchString == "" && $this->searchObor != 11){
+            $this->template->propag = $this->database->query('SELECT * FROM ideas WHERE id_obory=? and propagovano=1', $this->searchObor)->fetchAll();
             $this->template->vysledky = $this->database->query('SELECT * FROM ideas WHERE id_obory=?', $this->searchObor)->fetchAll();
         }
         if($this->searchString != "" && $this->searchObor != 11){
+            $this->template->propag = $this->database->query('SELECT * FROM ideas WHERE name=? and id_obory=? and propagovano=1', $this->searchString, $this->searchObor)->fetchAll();
             $this->template->vysledky = $this->database->query('SELECT * FROM ideas WHERE name=? and id_obory=?', $this->searchString, $this->searchObor)->fetchAll();
         }
     }
