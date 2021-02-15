@@ -39,7 +39,10 @@
         <div class="card text-center">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-4 text-left">
+                    {if $r->zaplaceno != 1}
+                        <a href="#">Zaplatit a zpřístupnit</a>
+                    {/if}
                     </div>
                     <div class="col-sm-4 text-center">
                         {$r->name}
