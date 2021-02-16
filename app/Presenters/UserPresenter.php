@@ -498,20 +498,20 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
             $this->userManager->createNtor($values->email,$values->password,$ipp,$randomToken);
 
-            /*$mail = new Message;
-            $mail->setFrom('Scan <scan@.info>')
+            $mail = new Message;
+            $mail->setFrom('Start-Startup.cz <noreply@start-startup.cz>')
                 ->addTo($values->email)
                 ->setSubject('Aktivace účtu')
-                ->setHTMLBody("<b>Vítá vás </b>, <br>Pro potvrzení emailu: <a href='https://.cz/user/ver?u=" . $randomToken . "'>kliknout zde</a>");
+                ->setHTMLBody("<b>Vítá Vás Start-Startup</b>, <br>Pro potvrzení emailu: <a href='https://start-startup.cz/user/ver?u=" . $randomToken . "'>kliknout zde</a>");
 
             $mailer = new Nette\Mail\SmtpMailer([
-                'host' => 'server.cz',
-                'username' => 'scan@.info',
-                'password' => '',
+                'host' => 'mail.start-startup.cz',
+                'username' => 'noreply@start-startup.cz',
+                'password' => '?yaK6)rq_gRg',
                 'secure' => 'ssl',
             ]);
             $mailer->send($mail);
-             */
+
 
 
             $this->flashMessage('Registraci potvrdte emailem, zkontrolujte spam slozku.');
@@ -570,20 +570,19 @@ final class UserPresenter extends Nette\Application\UI\Presenter
 
             $this->userManager->createStor($values->email,$values->password,$ipp,$randomToken);
 
-            /*$mail = new Message;
-            $mail->setFrom('Scan <scan@.info>')
+            $mail = new Message;
+            $mail->setFrom('Start-Startup.cz <noreply@start-startup.cz>')
                 ->addTo($values->email)
                 ->setSubject('Aktivace účtu')
-                ->setHTMLBody("<b>Vítá vás </b>, <br>Pro potvrzení emailu: <a href='https://.cz/user/ver?u=" . $randomToken . "'>kliknout zde</a>");
+                ->setHTMLBody("<b>Vítá Vás Start-Startup</b>, <br>Pro potvrzení emailu: <a href='https://start-startup.cz/user/ver?u=" . $randomToken . "'>kliknout zde</a>");
 
             $mailer = new Nette\Mail\SmtpMailer([
-                'host' => 'server.cz',
-                'username' => 'scan@.info',
-                'password' => '',
+                'host' => 'mail.start-startup.cz',
+                'username' => 'noreply@start-startup.cz',
+                'password' => '?yaK6)rq_gRg',
                 'secure' => 'ssl',
             ]);
             $mailer->send($mail);
-             */
 
 
             $this->flashMessage('Registraci potvrdte emailem, zkontrolujte spam slozku.');
@@ -992,19 +991,21 @@ final class UserPresenter extends Nette\Application\UI\Presenter
             ], 'WHERE username = ?',$e);
 
 
-            /*$mail = new Message;
-            $mail->setFrom('Scan <scan@it-helpdesk.info>')
-                ->addTo($e)
+
+            $mail = new Message;
+            $mail->setFrom('Start-Startup.cz <noreply@start-startup.cz>')
+                ->addTo($values->email)
                 ->setSubject('Reset Hesla')
-                ->setHTMLBody("<b>Vaše heslo bylo vyžádáno k resetování</b>, <br>Pokud jste tak učinili, klikněte zde: <a href='https://scan.ict-group.cz/user/r?u=" . $randomToken . "'>resetovat heslo</a>");
+                ->setHTMLBody("<b>Vaše heslo bylo vyžádáno k resetování</b>, <br>Pokud jste tak učinili, klikněte zde: <a href='http://start-startup.cz//user/r?u=" . $randomToken . "'>resetovat heslo</a>");
 
             $mailer = new Nette\Mail\SmtpMailer([
-                'host' => 'host.cz',
-                'username' => 'a@a.a',
-                'password' => 'fdsfsdf',
+                'host' => 'mail.start-startup.cz',
+                'username' => 'noreply@start-startup.cz',
+                'password' => '?yaK6)rq_gRg',
                 'secure' => 'ssl',
             ]);
-            $mailer->send($mail);*/
+            $mailer->send($mail);
+
 
             $this->flashMessage('Resetovací kód byl zaslán na Váš email','warning');
             $this->redirect('User:');
